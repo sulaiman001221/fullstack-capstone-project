@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const connectToDatabase = require('../db'); // adjust path if needed
+const connectToDatabase = require('../models/db'); // adjust path if needed
 const { ObjectId } = require('mongodb');
 
 router.get('/', async (req, res) => {

@@ -6,22 +6,23 @@ function MainPage() {
     const [gifts, setGifts] = useState([]);
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Task 1: Write async fetch operation
+        // fetch all gifts
         const fetchGifts = async () => {
             try {
-                const response = await fetch(`${urlConfig.baseUrl}/api/gifts`);
+                let url = `${urlConfig.backendUrl}/api/gifts`
+                const response = await fetch(url);
                 if (!response.ok) {
-                    throw new Error("Failed to fetch gifts");
+                    //something went wrong
+                    throw new Error(`HTTP error; ${response.status}`)
                 }
                 const data = await response.json();
                 setGifts(data);
             } catch (error) {
-                console.error("Error fetching gifts:", error);
+                console.log('Fetch error: ' + error.message);
             }
         };
+
         fetchGifts();
-    }, []);
 
     // Task 2: Navigate to details page
     const goToDetailsPage = (productId) => {
@@ -50,12 +51,14 @@ function MainPage() {
                         <div className="card product-card">
 
                             {/* Task 4: Display gift image or placeholder */}
-                            <img
-                                src={gift.imageUrl || "https://via.placeholder.com/300x200"}
-                                className="card-img-top"
-                                alt={gift.name || "Gift"}
-                            />
-
+                            <div className="image-placeholder">
+                             {gift.image ? (
+                              <img src={gift.image} alt={gift.name} className="card-img-top" />
+                               ) : (
+                               <div className="no-image-available">No Image Available</div>
+                              )}
+                            </div>    
+                          
                             <div className="card-body">
 
                                 {/* Task 5: Display gift name */}
@@ -66,10 +69,7 @@ function MainPage() {
                                 </p>
 
                                 {/* Task 6: Display formatted date */}
-                                <p className="card-text">
-                                    Added on: {formatDate(gift.createdAt || Date.now())}
-                                </p>
-
+                                <p className="card-text">{formatDate(gift.date_added)}</p>
                                 <button
                                     onClick={() => goToDetailsPage(gift.id || gift._id)}
                                     className="btn btn-primary"
